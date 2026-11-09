@@ -8,14 +8,14 @@ ___________________________ test_roundtrip_no_noise ____________________________
         out = decode(encode(bits, C), C)
 >       assert (out == bits).all()
 E       assert np.False_
-E        +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7052e0b1f930>()
-E        +    where <built-in method all of numpy.ndarray object at 0x7052e0b1f930> = array([1, 0, ..., 0, 0, 0, 0]) == array([1, 0, ..., 0, 0, 1, 0])
+E        +  where np.False_ = <built-in method all of numpy.ndarray object at 0x75c06c44f930>()
+E        +    where <built-in method all of numpy.ndarray object at 0x75c06c44f930> = array([1, 1, ..., 1, 1, 0, 1]) == array([1, 0, ..., 0, 0, 1, 0])
 E             
 E             Full diff: (-: missing in left side, +: extra in left side)
 E             - array([1, 0, 1, 1, 0, 0, 1, 0])
-E             ?              ------      ^
-E             + array([1, 0, 0, 0, 0, 0, 0, 0])
-E             ?                    ^ ++++++.all
+E             ?                       --- ---
+E             + array([1, 1, 0, 0, 1, 1, 0, 1])
+E             ?           +++   +++.all
 
 tests/test_wave_clash.py:14: AssertionError
 _________________________ test_orthogonal_no_crosstalk _________________________
@@ -26,10 +26,10 @@ _________________________ test_orthogonal_no_crosstalk _________________________
         assert np.abs(off).max() < 1e-9
 >       assert np.allclose(np.diag(M), 1.0)
 E       assert False
-E        +  where False = <function allclose at 0x7052de7aa0b0>(array([1.00000000e+00, 5.74439822e-17, 1.48382965e-16, 5.57843774e-17,\n       1.07671098e-16, 9.75290637e-18, 3.37978752e-16, 9.87738756e-17]), 1.0)
-E        +    where <function allclose at 0x7052de7aa0b0> = np.allclose
-E        +    and   array([1.00000000e+00, 5.74439822e-17, 1.48382965e-16, 5.57843774e-17,\n       1.07671098e-16, 9.75290637e-18, 3.37978752e-16, 9.87738756e-17]) = <function diag at 0x7052ddd79870>(array([[1.00000000e+00, 5.55826794e-17, 2.41619021e-17, 4.85800010e-17,\n        1.35322330e-16, 1.01818072e-16, 8.4151...71752171e-17, 1.96796179e-16, 3.16268706e-16,\n        3.00678432e-16, 2.74902283e-16, 2.46234514e-16, 9.87738756e-17]]))
-E        +      where <function diag at 0x7052ddd79870> = np.diag
+E        +  where False = <function allclose at 0x75c06c2b6e70>(array([1.00000000e+00, 5.74439822e-17, 1.48382965e-16, 5.57843774e-17,\n       1.07671098e-16, 9.75290637e-18, 3.37978752e-16, 9.87738756e-17]), 1.0)
+E        +    where <function allclose at 0x75c06c2b6e70> = np.allclose
+E        +    and   array([1.00000000e+00, 5.74439822e-17, 1.48382965e-16, 5.57843774e-17,\n       1.07671098e-16, 9.75290637e-18, 3.37978752e-16, 9.87738756e-17]) = <function diag at 0x75c069b82b30>(array([[1.00000000e+00, 5.55826794e-17, 2.41619021e-17, 4.85800010e-17,\n        1.35322330e-16, 1.01818072e-16, 8.4151...71752171e-17, 1.96796179e-16, 3.16268706e-16,\n        3.00678432e-16, 2.74902283e-16, 2.46234514e-16, 9.87738756e-17]]))
+E        +      where <function diag at 0x75c069b82b30> = np.diag
 
 tests/test_wave_clash.py:21: AssertionError
 __________________________ test_light_noise_survives ___________________________
@@ -37,23 +37,23 @@ __________________________ test_light_noise_survives ___________________________
     def test_light_noise_survives():
         rows = noise_report(8, [0.01], trials=30)
 >       assert rows[0]["bit_error_rate"] <= 0.01
-E       assert 0.475 <= 0.01
+E       assert 0.4458 <= 0.01
 
 tests/test_wave_clash.py:34: AssertionError
 =========================== short test summary info ============================
 FAILED tests/test_wave_clash.py::test_roundtrip_no_noise - assert np.False_
- +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7052e0b1f930>()
- +    where <built-in method all of numpy.ndarray object at 0x7052e0b1f930> = array([1, 0, ..., 0, 0, 0, 0]) == array([1, 0, ..., 0, 0, 1, 0])
+ +  where np.False_ = <built-in method all of numpy.ndarray object at 0x75c06c44f930>()
+ +    where <built-in method all of numpy.ndarray object at 0x75c06c44f930> = array([1, 1, ..., 1, 1, 0, 1]) == array([1, 0, ..., 0, 0, 1, 0])
       
       Full diff: (-: missing in left side, +: extra in left side)
       - array([1, 0, 1, 1, 0, 0, 1, 0])
-      ?              ------      ^
-      + array([1, 0, 0, 0, 0, 0, 0, 0])
-      ?                    ^ ++++++.all
+      ?                       --- ---
+      + array([1, 1, 0, 0, 1, 1, 0, 1])
+      ?           +++   +++.all
 FAILED tests/test_wave_clash.py::test_orthogonal_no_crosstalk - assert False
- +  where False = <function allclose at 0x7052de7aa0b0>(array([1.00000000e+00, 5.74439822e-17, 1.48382965e-16, 5.57843774e-17,\n       1.07671098e-16, 9.75290637e-18, 3.37978752e-16, 9.87738756e-17]), 1.0)
- +    where <function allclose at 0x7052de7aa0b0> = np.allclose
- +    and   array([1.00000000e+00, 5.74439822e-17, 1.48382965e-16, 5.57843774e-17,\n       1.07671098e-16, 9.75290637e-18, 3.37978752e-16, 9.87738756e-17]) = <function diag at 0x7052ddd79870>(array([[1.00000000e+00, 5.55826794e-17, 2.41619021e-17, 4.85800010e-17,\n        1.35322330e-16, 1.01818072e-16, 8.4151...71752171e-17, 1.96796179e-16, 3.16268706e-16,\n        3.00678432e-16, 2.74902283e-16, 2.46234514e-16, 9.87738756e-17]]))
- +      where <function diag at 0x7052ddd79870> = np.diag
-FAILED tests/test_wave_clash.py::test_light_noise_survives - assert 0.475 <= 0.01
-3 failed, 1 passed in 0.23s
+ +  where False = <function allclose at 0x75c06c2b6e70>(array([1.00000000e+00, 5.74439822e-17, 1.48382965e-16, 5.57843774e-17,\n       1.07671098e-16, 9.75290637e-18, 3.37978752e-16, 9.87738756e-17]), 1.0)
+ +    where <function allclose at 0x75c06c2b6e70> = np.allclose
+ +    and   array([1.00000000e+00, 5.74439822e-17, 1.48382965e-16, 5.57843774e-17,\n       1.07671098e-16, 9.75290637e-18, 3.37978752e-16, 9.87738756e-17]) = <function diag at 0x75c069b82b30>(array([[1.00000000e+00, 5.55826794e-17, 2.41619021e-17, 4.85800010e-17,\n        1.35322330e-16, 1.01818072e-16, 8.4151...71752171e-17, 1.96796179e-16, 3.16268706e-16,\n        3.00678432e-16, 2.74902283e-16, 2.46234514e-16, 9.87738756e-17]]))
+ +      where <function diag at 0x75c069b82b30> = np.diag
+FAILED tests/test_wave_clash.py::test_light_noise_survives - assert 0.4458 <= 0.01
+3 failed, 1 passed in 0.10s
