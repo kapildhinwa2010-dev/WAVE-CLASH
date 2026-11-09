@@ -42,7 +42,7 @@ def encode(bits, C):
 
 def decode(sig, C):
     """Correlate the signal with every carrier; sign of the real part = bit."""
-    proj = C @ sig
+    proj = np.conj(C) @ sig
     return (proj.real > 0).astype(int)
 
 
