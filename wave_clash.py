@@ -23,6 +23,16 @@ import numpy as np
 
 def carriers(n, length=64):
     """n orthogonal complex carriers (DFT rows), shape (n, length)."""
+    if isinstance(n, (bool, np.bool_)) or not isinstance(n, (int, np.integer)):
+        raise ValueError("n must be an integer")
+    if isinstance(length, (bool, np.bool_)) or not isinstance(length, (int, np.integer)):
+        raise ValueError("length must be an integer")
+    if n < 1:
+        raise ValueError("n must be at least 1")
+    if length < 1:
+        raise ValueError("length must be at least 1")
+    if n > length:
+        raise ValueError("n cannot exceed length for orthogonal DFT carriers")
     k = np.arange(length)
     C = np.exp(2j * np.pi * np.outer(np.arange(n), k) / length) / np.sqrt(length)
     return C
@@ -62,10 +72,17 @@ def crosstalk_matrix(n, length=64):
 
 def noise_report(n, sigmas, trials=50, length=64, seed=0):
     """Bit error rate of the superposed lattice vs gaussian noise."""
+    if isinstance(trials, (bool, np.bool_)) or not isinstance(trials, (int, np.integer)):
+        raise ValueError("trials must be an integer")
+    if trials < 1:
+        raise ValueError("trials must be at least 1")
     rng = np.random.default_rng(seed)
     C = carriers(n, length)
     rows = []
     for sigma in sigmas:
+        sigma = float(sigma)
+        if not np.isfinite(sigma) or sigma < 0:
+            raise ValueError("sigma values must be finite and non-negative")
         errors = 0
         total = 0
         for _ in range(trials):
@@ -88,15 +105,18 @@ def main():
     a = ap.parse_args()
 
     n = a.slots
-    M = crosstalk_matrix(n, a.length)
-    off = M - np.diag(np.diag(M))
-    report = {
-        "slots": n,
-        "carrier_length": a.length,
-        "crosstalk_max_offdiagonal": float(np.abs(off).max()),
-        "crosstalk_matrix": M.round(6).tolist(),
-        "noise_curve": noise_report(n, [float(s) for s in a.sigmas.split(",")], length=a.length),
-    }
+    try:
+        M = crosstalk_matrix(n, a.length)
+        off = M - np.diag(np.diag(M))
+        report = {
+            "slots": n,
+            "carrier_length": a.length,
+            "crosstalk_max_offdiagonal": float(np.abs(off).max()),
+            "crosstalk_matrix": M.round(6).tolist(),
+            "noise_curve": noise_report(n, [float(s) for s in a.sigmas.split(",")], length=a.length),
+        }
+    except ValueError as exc:
+        ap.error(str(exc))
     print(json.dumps(report, indent=2))
     with open(a.output, "w") as f:
         json.dump(report, f, indent=2)
