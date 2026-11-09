@@ -1,7 +1,7 @@
 """WAVE-CLASH: interference spectroscopy for a wave carrier memory.
 
-Encode bits into orthogonal complex carriers, superpose them into one signal,
-and measure what actually happens:
+Encode bits into orthogonal complex carriers as +1/-1 amplitudes, superpose
+them into one signal, and measure what actually happens:
 
 - crosstalk matrix: how much slot i's decoder leaks from slot j's carrier
 - noise report: bit errors vs gaussian noise level (honest numbers)
@@ -28,25 +28,32 @@ def carriers(n, length=64):
     return C
 
 
+def encode_amp(amps, C):
+    """Superpose arbitrary amplitudes onto carriers -> single complex signal."""
+    amps = np.asarray(amps)
+    return (C.T * amps.astype(complex)).sum(axis=1)
+
+
 def encode(bits, C):
-    """Superpose +-1 amplitudes on carriers -> single complex signal."""
+    """Superpose bits (0/1) as +1/-1 amplitudes -> single complex signal."""
     bits = np.asarray(bits)
-    sig = (C.T * bits.astype(complex)).sum(axis=1)
-    return sig
+    return encode_amp(2 * bits - 1, C)
 
 
 def decode(sig, C):
-    """Correlate the signal with every carrier; return signs (bits)."""
+    """Correlate the signal with every carrier; sign of the real part = bit."""
     proj = C @ sig
     return (proj.real > 0).astype(int)
 
 
 def crosstalk_matrix(n, length=64):
-    """M[i, j] = |decoded slot i signal | from a unit bit in slot j."""
+    """M[i, j] = |decoded slot i signal| from a unit amplitude in slot j only."""
     C = carriers(n, length)
     M = np.zeros((n, n))
     for j in range(n):
-        sig = encode([1 if k == j else 0 for k in range(n)], C)
+        amps = np.zeros(n)
+        amps[j] = 1.0
+        sig = encode_amp(amps, C)
         proj = np.abs(C @ sig)
         for i in range(n):
             M[i, j] = proj[i]
