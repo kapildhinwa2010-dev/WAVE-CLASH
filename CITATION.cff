@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use wave-clash in your research, please cite it as below."
+title: "WAVE-CLASH: interference spectroscopy for wave memories"
+authors:
+  - family-names: Dhinwa
+    given-names: Kapil
+version: 0.1.0
+date-released: "2026-11-09"
+license: MIT
+repository-code: "https://github.com/kapildhinwa2010-dev/WAVE-CLASH"
+abstract: "A numpy kit that measures carrier crosstalk and bit error rates under noise for superposed wave memories - superposition is real, but it is not free."
