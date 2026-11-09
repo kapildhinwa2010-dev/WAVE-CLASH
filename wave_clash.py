@@ -54,7 +54,7 @@ def crosstalk_matrix(n, length=64):
         amps = np.zeros(n)
         amps[j] = 1.0
         sig = encode_amp(amps, C)
-        proj = np.abs(C @ sig)
+        proj = np.abs(np.conj(C) @ sig)
         for i in range(n):
             M[i, j] = proj[i]
     return M
