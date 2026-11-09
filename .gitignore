@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+.venv/
+wave_clash_report.json
