@@ -20,6 +20,29 @@ But add noise, and errors appear **measurably**: light noise survives,
 heavy noise breaks the lattice. That honest curve is the whole point:
 superposition is real, but it is not free. ⚖️
 
+## 🚀 Quick Start
+
+Requirements: Python 3.9+ and NumPy. CPU-only, seconds per run.
+
+    git clone https://github.com/kapildhinwa2010-dev/WAVE-CLASH.git
+    cd WAVE-CLASH
+    pip install -e .
+
+    python wave_clash.py --slots 8 --sigmas 0.01,0.1,0.5,1.0
+
+## 🗺️ How the pipeline flows
+
+```mermaid
+flowchart LR
+    A["bit pattern b_i"] --> B["BPSK: bit -> +/-1 amplitude"]
+    B --> C["DFT carrier per slot"]
+    C --> D["superposed signal s = sum C_i a_i"]
+    D --> E["+ gaussian noise"]
+    E --> F["matched filter: conj(C) @ s"]
+    F --> G["per-slot decode -> bits"]
+    G --> H["crosstalk matrix + BER curve report"]
+```
+
 ## 💻 Usage
 
     python wave_clash.py --slots 8 --sigmas 0.01,0.1,0.5,1.0
